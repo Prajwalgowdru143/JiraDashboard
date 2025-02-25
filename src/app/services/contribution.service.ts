@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, tap, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment'
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContributionService {
   // Mock API (Replace this with a real API when needed)
-  private apiUrl = 'https://dashboard-jira.atlassian.net/rest/api/3';
-  private token = 'ATATT3xFfGF0T6dqmVbW-68blGD_nRpxPNMGlAZ6E2asW7Tp5D_1JmUfuMxnz8a4BsZe97uOEjcxsc1dxod_kYYl0jvC2b_YafLntJPkcPOU-Y-F0iTDcRmnu4X4Eji-_gkZQfLwIMrn-yH79kTSQFg6Y-uXch-l0i0E4uJeAaHClF6MbZQT924=0A91E7F8';
   private headers = new HttpHeaders({
-    'Authorization': 'Basic ' + btoa(`pajju2pg@gmail.com:${this.token}`),
+    'Authorization': 'Basic ' + btoa(`${environment.EMAIL}:${environment.TOKEN}`),
     'Accept': 'application/json'
   });
   constructor(private http: HttpClient) { }
