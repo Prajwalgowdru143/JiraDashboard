@@ -38,8 +38,6 @@ interface ProjectStats {
       Project Overview
     </h2>
 
-
-
   <!-- Scrollable Projects Grid -->
   <div class="max-h-full border border-gray-200 w-full flex justify-center dark:border-gray-700 rounded-lg p-2">
     <div id="chart" class="h-fit">
@@ -50,6 +48,7 @@ interface ProjectStats {
     [fill]="chartOptions.fill"
     [dataLabels]="chartOptions.dataLabels"
     [responsive]="chartOptions.responsive"
+    [legend]="chartOptions.legend"
   ></apx-chart>
         </div>
   </div>
@@ -58,36 +57,35 @@ interface ProjectStats {
 })
 export class ProjectOverviewComponent implements OnInit {
   @ViewChild("chart") chart: ChartComponent | undefined;
-  public chartOptions: Partial<ChartOptions>;
+  public chartOptions: ChartOptions; // Changed from Partial<ChartOptions> to ChartOptions
   topProjectStats: ProjectStats = { issueLeft: 0, issueDone: 0 };
   
   constructor(private contributionService: ContributionService, private filterService: FilterService) {
+    // Initialize with complete data structure to avoid undefined values
     this.chartOptions = {
-      series: [44, 55] as ApexNonAxisChartSeries, // ✅ Ensure correct type
+      series: [44, 55],
       chart: {
         width: 380,
         type: "donut"
-      } as ApexChart, // ✅ Explicitly cast
+      },
       labels: ["Issues Left", "Issues Done"],
       dataLabels: {
         enabled: false
-      } as ApexDataLabels, // ✅ Ensure defined
+      },
       fill: {
         type: "gradient"
-      } as ApexFill, // ✅ Provide default value
+      },
       legend: {
         formatter: function (val, opts) {
           return val + " - " + opts.w.globals.series[opts.seriesIndex];
         }
-      } as ApexLegend, // ✅ Ensure defined
-      responsive: [] as ApexResponsive[] // ✅ Default empty array
+      },
+      responsive: []
     };
-    
   }
 
-
   ngOnInit() {
-    // **Listen for project key changes**
+    // Listen for project key changes
     this.filterService.projectKey$.subscribe((projectKey) => {
       this.getIsuues(projectKey);
     });
@@ -96,30 +94,18 @@ export class ProjectOverviewComponent implements OnInit {
     this.getIsuues('');
   }
 
-
   private getIsuues(projectKey: string) {
     this.contributionService.getProjectIsuues(projectKey)
       .then((response) => {
-       
-      
-  
         // Update chart data
         if (response) {
-          const issueLeft = response.totalIssuesResponse.total-response.totalIssuesDoneResponse.total || 0;
+          const issueLeft = response.totalIssuesResponse.total - response.totalIssuesDoneResponse.total || 0;
           const issueDone = response.totalIssuesDoneResponse.total || 0;
-          this.chartOptions = { 
-            ...this.chartOptions, 
-            series: [issueLeft, issueDone] as ApexNonAxisChartSeries,
-            labels: ["Issues Left", "Issues Done"],
-            chart: this.chartOptions.chart || { type: "donut", width: 380 }, // ✅ Fallback value
-            dataLabels: this.chartOptions.dataLabels || { enabled: false }, // ✅ Ensure defined
-            fill: this.chartOptions.fill || { type: "gradient" }, // ✅ Provide fallback
-            responsive: this.chartOptions.responsive || [] // ✅ Ensure array
-          };
+          
+          // Update only the series data, keeping other properties intact
+          this.chartOptions.series = [issueLeft, issueDone];
         }
       })
       .catch((error) => console.error('Error loading department stats:', error));
   }
-  
-  
 }
