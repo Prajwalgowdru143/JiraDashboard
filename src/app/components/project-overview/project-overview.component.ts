@@ -63,37 +63,26 @@ export class ProjectOverviewComponent implements OnInit {
   
   constructor(private contributionService: ContributionService, private filterService: FilterService) {
     this.chartOptions = {
-      series: [44, 55] as ApexNonAxisChartSeries,  // Ensure correct type
+      series: [44, 55] as ApexNonAxisChartSeries, // ✅ Ensure correct type
       chart: {
         width: 380,
         type: "donut"
-      },
+      } as ApexChart, // ✅ Explicitly cast
       labels: ["Issues Left", "Issues Done"],
       dataLabels: {
         enabled: false
-      },
+      } as ApexDataLabels, // ✅ Ensure defined
       fill: {
         type: "gradient"
-      },
+      } as ApexFill, // ✅ Provide default value
       legend: {
         formatter: function (val, opts) {
           return val + " - " + opts.w.globals.series[opts.seriesIndex];
         }
-      },
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200
-            },
-            legend: {
-              position: "bottom"
-            }
-          }
-        }
-      ]
+      } as ApexLegend, // ✅ Ensure defined
+      responsive: [] as ApexResponsive[] // ✅ Default empty array
     };
+    
   }
 
 
@@ -122,6 +111,10 @@ export class ProjectOverviewComponent implements OnInit {
             ...this.chartOptions, 
             series: [issueLeft, issueDone] as ApexNonAxisChartSeries,
             labels: ["Issues Left", "Issues Done"],
+            chart: this.chartOptions.chart || { type: "donut", width: 380 }, // ✅ Fallback value
+            dataLabels: this.chartOptions.dataLabels || { enabled: false }, // ✅ Ensure defined
+            fill: this.chartOptions.fill || { type: "gradient" }, // ✅ Provide fallback
+            responsive: this.chartOptions.responsive || [] // ✅ Ensure array
           };
         }
       })
