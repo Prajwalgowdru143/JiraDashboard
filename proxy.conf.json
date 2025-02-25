@@ -1,0 +1,9 @@
+{
+    "/rest/api/3": {
+      "target": "https://dashboard-jira.atlassian.net",
+      "secure": true,
+      "changeOrigin": true,
+      "logLevel": "debug"
+    }
+  }
+  
