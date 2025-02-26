@@ -64,7 +64,7 @@ interface Contributor {
           {{ contributor.contributions !== null && contributor.contributions !== undefined ? contributor.contributions.toLocaleString() : '0' }}
         </div>
         <div class="text-sm flex items-center text-gray-500 dark:text-gray-400">
-       <ng-icon name="heroFireSolid" color="red"/>streak: {{ contributor.streak?.toFixed(2) }}%
+       <ng-icon name="heroFireSolid" color="red"/> streak: {{ contributor.streak?.toFixed(2) }}%
         </div>
       </div>
     </div>

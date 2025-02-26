@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ContributionService } from '../../../services/contribution.service';
@@ -39,12 +39,14 @@ interface FilterState {
           Projects
         </label>
         <select 
-          [(ngModel)]="filters.department"
-          (change)="onFiltersChange()"
-          class="w-full rounded-md border-gray-300 shadow-sm p-2.5 focus:border-indigo-500 focus:ring-indigo-500">
-          <option value="all">All Projects</option>
-          <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
-        </select>
+  [(ngModel)]="filters.department"
+  (change)="onFiltersChange()"
+  class="w-full rounded-md border-gray-300 shadow-sm p-2.5 focus:border-indigo-500 focus:ring-indigo-500">
+  <option value="all">All Projects</option>
+  <option *ngFor="let dept of departments; trackBy: trackById" [value]="dept.id">
+    {{ dept.name }}
+  </option>
+</select>
       </div>
 
       <!-- Contribution Type Filter -->
@@ -73,6 +75,28 @@ interface FilterState {
 })
 export class DashboardFiltersComponent implements OnInit {
   @Output() filtersChanged = new EventEmitter<FilterState>();
+  @Input() departments: { id: string, name: string }[] = [];
+
+  constructor(private contributionService: ContributionService,
+    private filterService: FilterService, private cdr: ChangeDetectorRef
+  ) { }
+
+  trackById(index: number, dept: { id: string; name: string }) {
+    return dept.id;
+  }
+
+  ngOnInit() {
+    this.filterService.departments$.subscribe(departments => {
+      if (departments.length > 0) {  // ✅ Only update if valid
+        console.log("📢 Received Updated Departments:", departments);
+        this.departments = departments;
+      }
+    });
+  }
+  ngOnChanges() {
+    console.log("🔥 Departments Updated in Filter Component:", this.departments);
+    this.cdr.detectChanges(); // Force change detection
+  }
 
   filters: FilterState = {
     dateRange: '30',
@@ -80,23 +104,20 @@ export class DashboardFiltersComponent implements OnInit {
     contributionType: 'issues'
   };
 
-  departments: { id: string, name: string }[] = [];
 
-  constructor(private contributionService: ContributionService,
-    private filterService: FilterService
-  ) { }
 
-  ngOnInit() {
-    this.contributionService.getDepartmentStats().subscribe({
-      next: (departments) => {
-        this.departments = departments;
-      },
-      error: (err) => {
-        console.error('Failed to fetch departments:', err);
-        this.departments = []; // Prevent UI from breaking
-      }
-    });
-  }
+
+  // ngOnInit() {
+  // this.contributionService.getDepartmentStats().subscribe({
+  //   next: (departments) => {
+  //     this.departments = departments;
+  //   },
+  //   error: (err) => {
+  //     console.error('Failed to fetch departments:', err);
+  //     this.departments = []; // Prevent UI from breaking
+  //   }
+  // });
+  // }
 
   async onFiltersChange() {
     this.filtersChanged.emit(this.filters);
