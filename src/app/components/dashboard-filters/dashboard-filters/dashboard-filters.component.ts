@@ -13,7 +13,7 @@ interface FilterState {
 @Component({
   selector: 'app-dashboard-filters',
   standalone: true,
-  imports: [CommonModule, FormsModule], // ✅ Include FormsModule here
+  imports: [CommonModule, FormsModule], //  Include FormsModule here
   template: `
     <div class="flex flex-col sm:flex-row gap-4">
       <!-- Date Range Filter -->
@@ -87,8 +87,8 @@ export class DashboardFiltersComponent implements OnInit {
 
   ngOnInit() {
     this.filterService.departments$.subscribe(departments => {
-      if (departments.length > 0) {  // ✅ Only update if valid
-        console.log("📢 Received Updated Departments:", departments);
+      if (departments.length > 0) {  //  Only update if valid
+        console.log(" Received Updated Departments:", departments);
         this.departments = departments;
       }
     });

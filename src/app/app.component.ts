@@ -10,6 +10,7 @@ import { DashboardFiltersComponent } from './components/dashboard-filters/dashbo
 import { ContributionHeatmapComponent } from './components/contribution-heatmap/contribution-heatmap/contribution-heatmap.component';
 import { FilterService } from './services/filter.service';
 import { ContributionService } from './services/contribution.service';
+import { RadialbarComponent } from './components/radialbar/radialbar.component';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ import { ContributionService } from './services/contribution.service';
     DepartmentStatsComponent,
     ContributorLeaderboardComponent,
     ProjectOverviewComponent,
+    RadialbarComponent,
     ModalComponent,
     NgIcon
   ],
@@ -42,11 +44,11 @@ import { ContributionService } from './services/contribution.service';
           </div>
         </div>
       </header>
-
+<!-- *ngIf="departments.length > 0" -->
       <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow p-4">
         <app-dashboard-filters
-  *ngIf="departments.length > 0" 
+  
   [departments]="departments"
   (filtersChanged)="applyFilters($event)">
 </app-dashboard-filters>
@@ -63,11 +65,15 @@ import { ContributionService } from './services/contribution.service';
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
             <app-contributor-leaderboard></app-contributor-leaderboard>
           </div>
-        </div>
-
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
           <app-project-overview></app-project-overview> 
         </div>
+         <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+          <app-radialbar></app-radialbar> 
+        </div>
+        </div>
+
+      
       </main>
 
       <!-- Modal -->
@@ -100,21 +106,21 @@ export class AppComponent {
   
     this.contributionService.getDepartmentStats().subscribe({
       next: (departments) => {
-        console.log("✅ Fetched Departments:", departments);
+        console.log(" Fetched Departments:", departments);
   
-        if (departments.length > 0) {  // ✅ Only update if departments exist
+        if (departments.length > 0) {  //  Only update if departments exist
           this.departments = departments.map(dept => ({
             id: dept.id,
             name: dept.name
           }));
   
-          console.log("📢 Transformed Departments Sent to Filter Component:", this.departments);
+          console.log(" Transformed Departments Sent to Filter Component:", this.departments);
           this.filterService.updateDepartments(this.departments); 
-          this.filterService.updateUserDetails(data);// ✅ Update the shared service
+          this.filterService.updateUserDetails(data);//  Update the shared service
         }
       },
       error: (err) => {
-        console.error('❌ Failed to fetch departments:', err);
+        console.error(' Failed to fetch departments:', err);
         this.departments = [];
       }
     });
@@ -123,7 +129,7 @@ export class AppComponent {
   }
   
   applyFilters(filters: { dateRange: string; department: string; contributionType: string }) {
-    console.log("📢 Filters Applied:", filters);
+    console.log(" Filters Applied:", filters);
 
     // Update filter service
     this.filterService.updateProjectKey(filters.department !== 'all' ? filters.department : '');
@@ -138,9 +144,9 @@ export class AppComponent {
       startDate.toISOString().split("T")[0],
       endDate.toISOString().split("T")[0]
     ).then(response => {
-      console.log('✅ Filtered contributions:', response);
+      console.log(' Filtered contributions:', response);
     }).catch(error => {
-      console.error('❌ Error fetching filtered data:', error);
+      console.error(' Error fetching filtered data:', error);
     });
   }
 }

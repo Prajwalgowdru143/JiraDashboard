@@ -17,8 +17,8 @@ export class FilterService {
   departments$ = this.departmentsSubject.asObservable();
 
   updateDepartments(departments: { id: string, name: string }[]) {
-    console.log("📢 Updating departments in FilterService:", departments);
-    if (departments.length > 0) {  // ✅ Only update if non-empty
+    console.log(" Updating departments in FilterService:", departments);
+    if (departments.length > 0) {  //  Only update if non-empty
       this.departmentsSubject.next(departments);
     }
   }

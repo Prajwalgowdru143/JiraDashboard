@@ -23,7 +23,7 @@ export class ContributionService {
   });
 
   if (!userDetails?.email || !userDetails?.apiToken) {
-    console.error("❌ User details are missing!");
+    console.error(" User details are missing!");
     return new HttpHeaders(); // Return empty headers to prevent errors
   }
 
@@ -41,12 +41,12 @@ export class ContributionService {
     try {
       const response = await this.http.get<any>(
         `/rest/api/3/search?jql=${encodeURIComponent(jql)}`,
-        { headers: this.getHeaders() } // ✅ Use updated headers
+        { headers: this.getHeaders() } //  Use updated headers
       ).toPromise();
 
       const userresponse = await this.http.get<any>(
         `/rest/api/3/user/assignable/search?project=${projectKey}`,
-        { headers: this.getHeaders() } // ✅ Use updated headers
+        { headers: this.getHeaders() } //  Use updated headers
       ).toPromise();
 
       return { response, userresponse };
